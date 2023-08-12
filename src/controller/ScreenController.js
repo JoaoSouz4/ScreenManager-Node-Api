@@ -1,4 +1,5 @@
 const Screen = require("../model/ScreenModel.js");
+const mongoose = require('mongoose');
 
 function formatedScreen(string) {
             
@@ -40,6 +41,14 @@ class ScreenController{
         }
     }
 
+    async FindScreenById(req, res){
+        const {id} = req.params;
+
+        const item = await Screen.findById({_id: id});
+        return res.status(200).json({list: item, isSucess: true});
+        
+    }
+
     async DeleteScreen(req, res){
         const {id} = req.params;
         const screen = await Screen.findById({_id: id});
@@ -49,6 +58,46 @@ class ScreenController{
         await Screen.deleteOne({name: screen.name});
         const currentList = await Screen.find({});
         return res.status(200).json({isSucess: true, message: 'deleted with sucess', currentList: currentList})
+    }
+
+    async EditScreen(req, res){
+        const {latestId} = req.body;
+        const {name, brand, description, prices} = req.body;
+
+        const screenTarget = await Screen.findById({_id: latestId});
+        const nameHasRegister = await Screen.findOne({name: name});
+
+        if(nameHasRegister){
+            if(nameHasRegister.equals(screenTarget)){
+                await screenTarget.updateOne({
+                    name: name,
+                    brand: brand, 
+                    description: description,
+                    prices: {
+                        parallel: prices.parallel,
+                        medium: prices.medium,
+                        firstLine: prices.firstLine,
+                    }
+                })
+
+                return res.status(200).json({isSucess: true, message: 'Dados atualizado com sucesso'})
+            } else {
+                return res.json({isSucess: false, message: `${name} Já foi registrado, use outro`})
+            }  
+        }else {
+            await screenTarget.updateOne({
+                name: name,
+                brand: brand, 
+                description: description,
+                prices: {
+                    parallel: prices.parallel,
+                    medium: prices.medium,
+                    firstLine: prices.firstLine,
+                }
+            })
+
+            return res.status(200).json({isSucess: true, message: 'Dados atualizados com sucesso'})
+        }
     }
 }
 

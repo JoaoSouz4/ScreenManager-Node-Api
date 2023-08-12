@@ -10,6 +10,8 @@ routes.post('/post/insert', checkScreen, ScreenController.InsertScreen);
 routes.post('/delete/deletescreen/:id', ScreenController.DeleteScreen)
 routes.get('/get/allscreen', ScreenController.GetAllScreen);
 routes.get('/get/findscreen/:screen', ScreenController.FindScreen);
-routes.get('/get/findscreen/', ScreenController.GetAllScreen)
+routes.get('/get/findscreen/', ScreenController.GetAllScreen);
+routes.post('/post/editscreen', ScreenController.EditScreen);
+routes.get('/get/findscreenbyid', ScreenController.FindScreenById)
 
 module.exports = routes
